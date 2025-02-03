@@ -1,0 +1,823 @@
+tags:
+    - name: document-store
+
+paths:
+    /document-store/store:
+        post:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Create a new document store
+            description: Creates a new document store with the provided details
+            operationId: createDocumentStore
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DocumentStore'
+                required: true
+            responses:
+                '200':
+                    description: Successfully created document store
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DocumentStore'
+                '400':
+                    description: Invalid request body
+                '500':
+                    description: Internal server error
+        get:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: List all document stores
+            description: Retrieves a list of all document stores
+            operationId: getAllDocumentStores
+            responses:
+                '200':
+                    description: A list of document stores
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/DocumentStore'
+                '500':
+                    description: Internal server error
+
+    /document-store/store/{id}:
+        get:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Get a specific document store
+            description: Retrieves details of a specific document store by its ID
+            operationId: getDocumentStoreById
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document Store ID
+            responses:
+                '200':
+                    description: Successfully retrieved document store
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DocumentStore'
+                '404':
+                    description: Document store not found
+                '500':
+                    description: Internal server error
+        put:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Update a specific document store
+            description: Updates the details of a specific document store by its ID
+            operationId: updateDocumentStore
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document Store ID
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DocumentStore'
+                required: true
+            responses:
+                '200':
+                    description: Successfully updated document store
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DocumentStore'
+                '404':
+                    description: Document store not found
+                '500':
+                    description: Internal server error
+        delete:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Delete a specific document store
+            description: Deletes a document store by its ID
+            operationId: deleteDocumentStore
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document Store ID
+            responses:
+                '200':
+                    description: Successfully deleted document store
+                '404':
+                    description: Document store not found
+                '500':
+                    description: Internal server error
+
+    /document-store/upsert/{id}:
+        post:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Upsert document to document store
+            description: Upsert document to document store
+            operationId: upsertDocument
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document Store ID
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DocumentStoreLoaderForUpsert'
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                files:
+                                    type: array
+                                    items:
+                                        type: string
+                                        format: binary
+                                    description: Files to be uploaded
+                                loader:
+                                    type: string
+                                    nullable: true
+                                    example: '{"name":"plainText","config":{"text":"why the sky is blue"}}'
+                                    description: Loader configurations
+                                splitter:
+                                    type: string
+                                    nullable: true
+                                    example: '{"name":"recursiveCharacterTextSplitter","config":{"chunkSize":2000}}'
+                                    description: Splitter configurations
+                                embedding:
+                                    type: string
+                                    nullable: true
+                                    example: '{"name":"openAIEmbeddings","config":{"modelName":"text-embedding-ada-002"}}'
+                                    description: Embedding configurations
+                                vectorStore:
+                                    type: string
+                                    nullable: true
+                                    example: '{"name":"faiss"}'
+                                    description: Vector Store configurations
+                                recordManager:
+                                    type: string
+                                    nullable: true
+                                    example: '{"name":"postgresRecordManager"}'
+                                    description: Record Manager configurations
+                            required:
+                                - files
+                required: true
+            responses:
+                '200':
+                    description: Successfully execute upsert operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/VectorUpsertResponse'
+
+                '400':
+                    description: Invalid request body
+                '500':
+                    description: Internal server error
+
+    /document-store/refresh/{id}:
+        post:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Re-process and upsert all documents in document store
+            description: Re-process and upsert all existing documents in document store
+            operationId: refreshDocument
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document Store ID
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DocumentStoreLoaderForRefresh'
+                required: true
+            responses:
+                '200':
+                    description: Successfully execute refresh operation
+                    content:
+                        application/json:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/VectorUpsertResponse'
+
+                '400':
+                    description: Invalid request body
+                '500':
+                    description: Internal server error
+
+    /document-store/vectorstore/query:
+        post:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Retrieval query
+            description: Retrieval query for the upserted chunks
+            operationId: queryVectorStore
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - storeId
+                                - query
+                            properties:
+                                storeId:
+                                    type: string
+                                    description: Document Store ID
+                                    example: '603a7b51-ae7c-4b0a-8865-e454ed2f6766'
+                                query:
+                                    type: string
+                                    description: Query to search for
+                                    example: 'What is the capital of France?'
+                required: true
+            responses:
+                '200':
+                    description: Successfully executed query on vector store
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    timeTaken:
+                                        type: number
+                                        description: Time taken to execute the query (in milliseconds)
+                                    docs:
+                                        type: array
+                                        items:
+                                            $ref: '#/components/schemas/Document'
+                '400':
+                    description: Invalid request body
+                '500':
+                    description: Internal server error
+
+    /document-store/loader/{storeId}/{loaderId}:
+        delete:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Delete specific document loader and associated chunks from document store
+            description: Delete specific document loader and associated chunks from document store. This does not delete data from vector store.
+            operationId: deleteLoaderFromDocumentStore
+            parameters:
+                - in: path
+                  name: storeId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Store ID
+                - in: path
+                  name: loaderId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Loader ID
+            responses:
+                '200':
+                    description: Successfully deleted loader from document store
+                '400':
+                    description: Invalid ID provided
+                '404':
+                    description: Document Store not found
+                '500':
+                    description: Internal server error
+
+    /document-store/vectorstore/{id}:
+        delete:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Delete data from vector store
+            description: Only data that were upserted with Record Manager will be deleted from vector store
+            operationId: deleteVectorStoreFromStore
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Store ID
+            responses:
+                '200':
+                    description: Successfully deleted data from vector store
+                '400':
+                    description: Invalid ID provided
+                '404':
+                    description: Document Store not found
+                '500':
+                    description: Internal server error
+
+    /document-store/chunks/{storeId}/{loaderId}/{pageNo}:
+        get:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Get chunks from a specific document loader
+            description: Get chunks from a specific document loader within a document store
+            operationId: getDocumentStoreFileChunks
+            parameters:
+                - in: path
+                  name: storeId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document Store ID
+                - in: path
+                  name: loaderId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Document loader ID
+                - in: path
+                  name: pageNo
+                  required: true
+                  schema:
+                      type: string
+                  description: Pagination number
+            responses:
+                '200':
+                    description: Successfully retrieved chunks from document loader
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DocumentStoreFileChunkPagedResponse'
+                '404':
+                    description: Document store not found
+                '500':
+                    description: Internal server error
+
+    /document-store/chunks/{storeId}/{loaderId}/{chunkId}:
+        put:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Update a specific chunk
+            description: Updates a specific chunk from a document loader
+            operationId: editDocumentStoreFileChunk
+            parameters:
+                - in: path
+                  name: storeId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Store ID
+                - in: path
+                  name: loaderId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Loader ID
+                - in: path
+                  name: chunkId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Chunk ID
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Document'
+                required: true
+            responses:
+                '200':
+                    description: Successfully updated chunk
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DocumentStoreFileChunkPagedResponse'
+                '404':
+                    description: Document store not found
+                '500':
+                    description: Internal server error
+
+        delete:
+            tags:
+                - document-store
+            security:
+                - bearerAuth: []
+            summary: Delete a specific chunk from a document loader
+            description: Delete a specific chunk from a document loader
+            operationId: deleteDocumentStoreFileChunk
+            parameters:
+                - in: path
+                  name: storeId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Store ID
+                - in: path
+                  name: loaderId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Loader ID
+                - in: path
+                  name: chunkId
+                  required: true
+                  schema:
+                      type: string
+                  description: Document Chunk ID
+            responses:
+                '200':
+                    description: Successfully deleted chunk
+                '400':
+                    description: Invalid ID provided
+                '404':
+                    description: Document Store not found
+                '500':
+                    description: Internal server error
+
+
+        post:
+            tags:
+                - vector
+            security:
+                - bearerAuth: []
+            operationId: vectorUpsert
+            summary: Upsert vector embeddings
+            description: Upsert vector embeddings of documents in a chatflow
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                  description: Chatflow ID
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                stopNodeId:
+                                    type: string
+                                    description: In cases when you have multiple vector store nodes, you can specify the node ID to store the vectors
+                                    example: 'node_1'
+                                overrideConfig:
+                                    type: object
+                                    description: The configuration to override the default vector upsert settings (optional)
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                files:
+                                    type: array
+                                    items:
+                                        type: string
+                                        format: binary
+                                    description: Files to be uploaded
+                                modelName:
+                                    type: string
+                                    nullable: true
+                                    example: ''
+                                    description: Other override configurations
+                            required:
+                                - files
+                required: true
+            responses:
+                '200':
+                    description: Vector embeddings upserted successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/VectorUpsertResponse'
+                '400':
+                    description: Invalid input provided
+                '404':
+                    description: Chatflow not found
+                '422':
+                    description: Validation error
+                '500':
+                    description: Internal server error
+
+components:
+    responses:
+        UnauthorizedError:
+            description: Access token is missing or invalid
+    schemas:
+        ApiKey:
+            type: object
+            properties:
+                apiKey:
+                    type: string
+                    example: 'vYV8OdUMRzRQbzpp2JzY5DvriBnuVHo3pYpPQ7IJWyw='
+                apiSecret:
+                    type: string
+                    example: '50e19a35ee1df775c09628dade1c00f0f680c6e15256e34a6eab350b38b31352df35c4db7925a3e5dd41cc773a0e2529e6c6da18408a8bbeeb0ae4b0f0ab9486.a96478a9225ed6ab'
+                chatFlows:
+                    type: array
+                    example: []
+                createdAt:
+                    type: string
+                    example: '10-Mar-24'
+                id:
+                    type: string
+                    example: '525e4daa2104f06ffdea5c1af37009be'
+                keyName:
+                    type: string
+                    example: 'someKeyName'
+        Document:
+            type: object
+            properties:
+                pageContent:
+                    type: string
+                    example: 'This is the content of the page.'
+                metadata:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    example:
+                        author: 'John Doe'
+                        date: '2024-08-24'
+
+        DocumentStore:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    description: Unique identifier for the document store
+                name:
+                    type: string
+                    description: Name of the document store
+                description:
+                    type: string
+                    description: Description of the document store
+                loaders:
+                    type: string
+                    description: Loaders associated with the document store, stored as JSON string
+                whereUsed:
+                    type: string
+                    description: Places where the document store is used, stored as JSON string
+                status:
+                    type: string
+                    enum: [EMPTY, SYNC, SYNCING, STALE, NEW, UPSERTING, UPSERTED]
+                    description: Status of the document store
+                vectorStoreConfig:
+                    type: string
+                    description: Configuration for the vector store, stored as JSON string
+                embeddingConfig:
+                    type: string
+                    description: Configuration for the embedding, stored as JSON string
+                recordManagerConfig:
+                    type: string
+                    description: Configuration for the record manager, stored as JSON string
+                createdDate:
+                    type: string
+                    format: date-time
+                    description: Date and time when the document store was created
+                updatedDate:
+                    type: string
+                    format: date-time
+                    description: Date and time when the document store was last updated
+
+        DocumentStoreFileChunk:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    description: Unique identifier for the file chunk
+                docId:
+                    type: string
+                    format: uuid
+                    description: Document ID within the store
+                storeId:
+                    type: string
+                    format: uuid
+                    description: Document Store ID
+                chunkNo:
+                    type: integer
+                    description: Chunk number within the document
+                pageContent:
+                    type: string
+                    description: Content of the chunk
+                metadata:
+                    type: string
+                    description: Metadata associated with the chunk
+
+        DocumentStoreLoaderForPreview:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    description: Unique identifier for the document store loader
+                loaderId:
+                    type: string
+                    description: ID of the loader
+                loaderName:
+                    type: string
+                    description: Name of the loader
+                loaderConfig:
+                    type: object
+                    description: Configuration for the loader
+                splitterId:
+                    type: string
+                    description: ID of the text splitter
+                splitterName:
+                    type: string
+                    description: Name of the text splitter
+                splitterConfig:
+                    type: object
+                    description: Configuration for the text splitter
+                totalChunks:
+                    type: number
+                    description: Total number of chunks
+                totalChars:
+                    type: number
+                    description: Total number of characters
+                status:
+                    type: string
+                    enum: [EMPTY, SYNC, SYNCING, STALE, NEW, UPSERTING, UPSERTED]
+                    description: Status of the document store loader
+                storeId:
+                    type: string
+                    description: ID of the document store
+                files:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DocumentStoreLoaderFile'
+                source:
+                    type: string
+                    description: Source of the document store loader
+                credential:
+                    type: string
+                    description: Credential associated with the document store loader
+                rehydrated:
+                    type: boolean
+                    description: Whether the loader has been rehydrated
+                preview:
+                    type: boolean
+                    description: Whether the loader is in preview mode
+                previewChunkCount:
+                    type: number
+                    description: Number of chunks in preview mode
+
+        DocumentStoreLoaderFile:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                    description: Unique identifier for the file
+                name:
+                    type: string
+                    description: Name of the file
+                mimePrefix:
+                    type: string
+                    description: MIME prefix of the file
+                size:
+                    type: number
+                    description: Size of the file
+                status:
+                    type: string
+                    enum: [EMPTY, SYNC, SYNCING, STALE, NEW, UPSERTING, UPSERTED]
+                    description: Status of the file
+                uploaded:
+                    type: string
+                    format: date-time
+                    description: Date and time when the file was uploaded
+
+        DocumentStoreFileChunkPagedResponse:
+            type: object
+            properties:
+                chunks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DocumentStoreFileChunk'
+                count:
+                    type: number
+                    example: 1
+                file:
+                    $ref: '#/components/schemas/DocumentStoreLoaderForPreview'
+                currentPage:
+                    type: number
+                storeName:
+                    type: string
+                description:
+                    type: string
+
+        DocumentStoreLoaderForUpsert:
+            type: object
+            properties:
+                docId:
+                    type: string
+                    format: uuid
+                    description: Document ID within the store. If provided, existing configuration from the document will be used for the new document
+                metadata:
+                    type: object
+                    description: Metadata associated with the document
+                    example: { 'foo': 'bar' }
+                replaceExisting:
+                    type: boolean
+                    description: Whether to replace existing document loader with the new upserted chunks. However this does not delete the existing embeddings in the vector store
+                loader:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                            example: plainText
+                            description: Name of the loader (camelCase)
+                        config:
+                            type: object
+                            description: Configuration for the loader
+                splitter:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                            example: recursiveCharacterTextSplitter
+                            description: Name of the text splitter (camelCase)
+                        config:
+                            type: object
+                            description: Configuration for the text splitter
+                embedding:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                            example: openAIEmbeddings
+                            description: Name of the embedding generator (camelCase)
+                        config:
+                            type: object
+                            description: Configuration for the embedding generator
+                vectorStore:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                            example: faiss
+                            description: Name of the vector store (camelCase)
+                        config:
+                            type: object
+                            description: Configuration for the vector store
+                recordManager:
+                    type: object
+                    properties:
+                        name:
+                            type: string
+                            example: postgresRecordManager
+                            description: Name of the record manager (camelCase)
+                        config:
+                            type: object
+                            description: Configuration for the record manager
+
+        DocumentStoreLoaderForRefresh:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/DocumentStoreLoaderForUpsert'
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT # optional, for documentation purposes only
