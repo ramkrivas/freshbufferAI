@@ -1,5 +1,5 @@
 import { DocumentStoreStatus, IDocumentStoreLoaderFile, IDocumentStoreWhereUsed, IDocumentStoreLoader } from './Interface'
-import { DocumentStore } from '../../../core/database/entities/DocumentStore'
+import { DocumentStore } from '../../../core/Database/Entities/DocumentStore'
 import { addLoaderSource } from './Utils'
 
 export class DocumentStoreDTO {

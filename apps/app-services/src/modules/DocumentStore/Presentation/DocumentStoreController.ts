@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { InternalFreshbufferAiError } from '../../../core/errors/internalFreshbufferAiError'
-import { DocumentStoreDTO } from '../domain/DocumentStore.Entity'
-import createDocumentStore from '../application/usecases/CreateDocumentStore'
-import { getAllDocumentStores } from '../application/usecases/GetDocumentsStore'
+import { InternalFreshbufferAiError } from '../../../core/Errors/internalFreshbufferAiError'
+import { DocumentStoreDTO } from '../Domain/DocumentStore.Entity'
+import createDocumentStore from '../Application/UseCases/CreateDocumentStore'
+import { getAllDocumentStores } from '../Application/UseCases/GetDocumentsStore'
 
 const createDocumentStoreService = async (req: Request, res: Response, next: NextFunction) => {
     try {

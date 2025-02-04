@@ -1,5 +1,5 @@
 import express from 'express'
-import documentStoreRouter from './documentstore'
+import { documentStoreRouter } from '../../modules/DocumentStore'
 
 const router = express.Router()
 

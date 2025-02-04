@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
-import { DocumentStore } from '../../../../core/database/entities/DocumentStore'
-import { InternalFreshbufferAiError } from '../../../../core/errors/internalFreshbufferAiError'
-import { getErrorMessage } from '../../../../core/errors/utils'
+import { DocumentStore } from '../../../../core/Database/Entities/DocumentStore'
+import { InternalFreshbufferAiError } from '../../../../core/Errors/internalFreshbufferAiError'
+import { getErrorMessage } from '../../../../core/Errors/Utils'
 import { getRunningExpressApp } from '../../../../utils/getRunningExpressApp'
-import { DocumentStoreFileChunk } from '../../../../core/database/entities/DocumentStoreFileChunk'
+import { DocumentStoreFileChunk } from '../../../../core/Database/Entities/DocumentStoreFileChunk'
 
 const getAllDocumentStores = async () => {
     try {

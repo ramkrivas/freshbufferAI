@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { InternalFreshbufferAiError } from '../../core/errors/internalFreshbufferAiError'
+import { InternalFreshbufferAiError } from '../Errors/internalFreshbufferAiError'
 
 // we need eslint because we have to pass next arg for the error middleware
 // eslint-disable-next-line

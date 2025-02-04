@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import * as fs from 'fs'
 import * as path from 'path'
 import { createLogger, format, transports } from 'winston'
-import config from './config' // should be replaced by node-config or similar
+import config from '../../utils/config' // should be replaced by node-config or similar
 
 const { combine, timestamp, printf, errors } = format
 
