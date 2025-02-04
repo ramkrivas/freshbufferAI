@@ -1,4 +1,4 @@
-import * as Server from '../index'
+import * as Server from '../../index'
 
 export const getRunningExpressApp = function () {
     const runningExpressInstance = Server.getInstance()

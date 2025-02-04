@@ -2,9 +2,9 @@ import 'reflect-metadata'
 import path from 'path'
 import * as fs from 'fs'
 import { DataSource } from 'typeorm'
-import { getUserHome } from './utils'
-import { entities } from './core/database/entities'
-import { sqliteMigrations } from './core/database/migrations/sqlite'
+import { getUserHome } from '../../utils/FileSytem/getUserHome'
+import { entities } from './Entities'
+import { sqliteMigrations } from './Migrations/sqlite'
 
 let appDataSource: DataSource
 

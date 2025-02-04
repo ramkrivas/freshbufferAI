@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { DocumentStore } from '../../../../core/Database/Entities/DocumentStore'
 import { InternalFreshbufferAiError } from '../../../../core/Errors/internalFreshbufferAiError'
 import { getErrorMessage } from '../../../../core/Errors/Utils'
-import { getRunningExpressApp } from '../../../../utils/getRunningExpressApp'
+import { getRunningExpressApp } from '../../../../utils/Server/getRunningExpressApp'
 
 export default async (newDocumentStore: DocumentStore) => {
     try {

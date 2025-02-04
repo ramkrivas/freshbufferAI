@@ -5,12 +5,12 @@ import http from 'http'
 import path from 'path'
 import { Server } from 'socket.io'
 import { DataSource } from 'typeorm'
-import { getDataSource } from './DataSource'
-import errorHandlerMiddleware from './middlewares/errors'
-import freshbufferaiApiV1Router from './routes'
-import { getNodeModulesPackagePath } from './utils'
-import { getAllowedIframeOrigins, getCorsOptions, sanitizeMiddleware } from './utils/XSS'
-import logger, { expressRequestLogger } from './utils/logger'
+import { getDataSource } from './core/Database/DataSource'
+import errorHandlerMiddleware from './core/Middlewares'
+import freshbufferaiApiV1Routes from './core/Routing'
+import { getNodeModulesPackagePath } from './utils/FileSytem/getNodeModulesPackagePath'
+import { getAllowedIframeOrigins, getCorsOptions, sanitizeMiddleware } from './utils/Security/XSS'
+import logger, { expressRequestLogger } from './core/Logger'
 
 declare global {
     namespace Express {
@@ -94,7 +94,7 @@ export class App {
             next()
         })
 
-        this.app.use('/api/v1', freshbufferaiApiV1Router)
+        this.app.use('/api/v1', freshbufferaiApiV1Routes)
 
         // ----------------------------------------
         // Configure number of proxies in Host Environment
