@@ -1,4 +1,4 @@
-export class InternalFreshbufferAiError extends Error {
+export class FreshbufferAiError extends Error {
     statusCode: number
     constructor(statusCode: number, message: string) {
         super(message)

@@ -4,17 +4,20 @@ import { FreshbufferAiError } from '../../../../core/Errors'
 import { getErrorMessage } from '../../../../core/Errors/Utils'
 import { getRunningExpressApp } from '../../../../utils/Server/getRunningExpressApp'
 
-export default async (newDocumentStore: DocumentStore) => {
+export const deleteDocumentStore = async (storeId: string) => {
     try {
         const appServer = getRunningExpressApp()
-        const documentStoreRepository = appServer.AppDataSource.getRepository(DocumentStore)
-        const documentStore = documentStoreRepository.create(newDocumentStore)
-        const dbResponse = await documentStoreRepository.save(documentStore)
-        return dbResponse
+
+        // now delete the store
+        const tbd = await appServer.AppDataSource.getRepository(DocumentStore).delete({
+            id: storeId
+        })
+
+        return { deleted: tbd.affected }
     } catch (error) {
         throw new FreshbufferAiError(
             StatusCodes.INTERNAL_SERVER_ERROR,
-            `Error: documentStoreServices.createDocumentStore - ${getErrorMessage(error)}`
+            `Error: documentStoreServices.deleteDocumentStore - ${getErrorMessage(error)}`
         )
     }
 }

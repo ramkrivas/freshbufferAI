@@ -11,6 +11,7 @@ import freshbufferaiApiV1Routes from './core/Routing'
 import { getNodeModulesPackagePath } from './utils/FileSytem/getNodeModulesPackagePath'
 import { getAllowedIframeOrigins, getCorsOptions, sanitizeMiddleware } from './utils/Security/XSS'
 import logger, { expressRequestLogger } from './core/Logger'
+import { NodesPool } from './core/Nodes/NodesPool'
 
 declare global {
     namespace Express {
@@ -36,7 +37,7 @@ declare global {
 
 export class App {
     app: express.Application
-
+    nodesPool: NodesPool
     AppDataSource: DataSource = getDataSource()
 
     constructor() {
@@ -51,6 +52,10 @@ export class App {
 
             // Run Migrations Scripts
             await this.AppDataSource.runMigrations({ transaction: 'each' })
+
+            // Initialize nodes pool
+            this.nodesPool = new NodesPool()
+            await this.nodesPool.initialize()
         } catch (error) {
             logger.error('❌ [app-services]: Error during Data Source initialization:', error)
         }

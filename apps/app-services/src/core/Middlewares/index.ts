@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { StatusCodes } from 'http-status-codes'
-import { InternalFreshbufferAiError } from '../Errors/internalFreshbufferAiError'
+import { FreshbufferAiError } from '../Errors'
 
 // we need eslint because we have to pass next arg for the error middleware
 // eslint-disable-next-line
-async function errorHandlerMiddleware(err: InternalFreshbufferAiError, req: Request, res: Response, next: NextFunction) {
+async function errorHandlerMiddleware(err: FreshbufferAiError, req: Request, res: Response, next: NextFunction) {
     let displayedError = {
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
         success: false,
