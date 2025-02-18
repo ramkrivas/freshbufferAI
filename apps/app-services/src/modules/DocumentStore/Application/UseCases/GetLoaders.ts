@@ -1,4 +1,4 @@
-import nodesService from '../../../../core/Nodes/Index'
+import nodesService from '../../../../core/Nodes/Application/UseCases/index'
 import { FreshbufferAiError } from '../../../../core/Errors'
 import { StatusCodes } from 'http-status-codes'
 import { getErrorMessage } from '../../../../core/Errors/Utils'

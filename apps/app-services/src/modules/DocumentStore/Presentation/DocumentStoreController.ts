@@ -5,6 +5,8 @@ import { DocumentStoreDTO } from '../Domain/DocumentStore.Entity'
 import createDocumentStore from '../Application/UseCases/CreateDocumentStore'
 import { getAllDocumentStores, getDocumentStoreById } from '../Application/UseCases/GetDocumentsStore'
 import { deleteDocumentStore } from '../Application/UseCases/DeleteDocumentStore'
+import { DocumentStore } from '../../../core/Database/Entities/DocumentStore'
+import { updateDocumentStore } from '../Application/UseCases/UpdateDocumentStore'
 
 const createDocumentStoreService = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -56,4 +58,41 @@ const deleteDocumentStoreService = async (req: Request, res: Response, next: Nex
     }
 }
 
-export default { createDocumentStoreService, getAllDocumentStoresService, getDocumentsStoreByIdService, deleteDocumentStoreService }
+const updateDocumentStoreService = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (typeof req.params.id === 'undefined' || req.params.id === '') {
+            throw new FreshbufferAiError(
+                StatusCodes.PRECONDITION_FAILED,
+                `Error: documentStoreController.updateDocumentStore - storeId not provided!`
+            )
+        }
+        if (typeof req.body === 'undefined') {
+            throw new FreshbufferAiError(
+                StatusCodes.PRECONDITION_FAILED,
+                `Error: documentStoreController.updateDocumentStore - body not provided!`
+            )
+        }
+        const store = await getDocumentStoreById(req.params.id)
+        if (!store) {
+            throw new FreshbufferAiError(
+                StatusCodes.NOT_FOUND,
+                `Error: documentStoreController.updateDocumentStore - DocumentStore ${req.params.id} not found in the database`
+            )
+        }
+        const body = req.body
+        const updateDocStore = new DocumentStore()
+        Object.assign(updateDocStore, body)
+        const apiResponse = await updateDocumentStore(store, updateDocStore)
+        return res.json(DocumentStoreDTO.fromEntity(apiResponse))
+    } catch (error) {
+        next(error)
+    }
+}
+
+export default {
+    createDocumentStoreService,
+    getAllDocumentStoresService,
+    getDocumentsStoreByIdService,
+    deleteDocumentStoreService,
+    updateDocumentStoreService
+}

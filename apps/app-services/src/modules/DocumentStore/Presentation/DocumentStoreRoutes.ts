@@ -13,7 +13,12 @@ router.get('/store/:id', documentStoreController.getAllDocumentStoresService)
 // Delete store by id
 router.delete('/store/:id', documentStoreController.deleteDocumentStoreService)
 
+// Update documentStore
+router.put('/store/:id', documentStoreController.updateDocumentStoreService)
+
 // Get all loaders
 router.get('/components/loaders', loaderController.getDocumentLoadersService)
 
+// chunking preview
+router.post('/loader/preview', loaderController.previewFileChunks)
 export { router as documentStoreRouter }

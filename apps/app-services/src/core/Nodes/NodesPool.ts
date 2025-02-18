@@ -1,5 +1,5 @@
 import { getNodeModulesPackagePath } from '../../utils/FileSytem/getNodeModulesPackagePath'
-import { IComponentNodes, IComponentCredentials } from './Inteface'
+import { IComponentNodes, IComponentCredentials } from './Domain/Inteface'
 import { ICommonObject } from 'core-plugins'
 import logger from '../Logger'
 import path from 'path'
