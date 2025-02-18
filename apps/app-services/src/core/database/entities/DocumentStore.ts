@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-import { DocumentStoreStatus, IDocumentStore } from '../../../modules/document-store/domain/Interface'
+import { DocumentStoreStatus, IDocumentStore } from '../../../modules/DocumentStore/Domain/Interface'
 
 @Entity()
 export class DocumentStore implements IDocumentStore {
