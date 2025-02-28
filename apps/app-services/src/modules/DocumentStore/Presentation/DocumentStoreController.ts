@@ -7,6 +7,7 @@ import { getAllDocumentStores, getDocumentStoreById } from '../Application/UseCa
 import { deleteDocumentStore } from '../Application/UseCases/DeleteDocumentStore'
 import { DocumentStore } from '../../../core/Database/Entities/DocumentStore'
 import { updateDocumentStore } from '../Application/UseCases/UpdateDocumentStore'
+import { findDocStoreAvailableConfigs } from '../Application/UseCases/FindDocStoreAvailableConfigs'
 
 const createDocumentStoreService = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -89,10 +90,32 @@ const updateDocumentStoreService = async (req: Request, res: Response, next: Nex
     }
 }
 
+const getDocStoreConfigsService = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (typeof req.params.id === 'undefined' || req.params.id === '') {
+            throw new FreshbufferAiError(
+                StatusCodes.PRECONDITION_FAILED,
+                `Error: documentStoreController.getDocStoreConfigs - storeId not provided!`
+            )
+        }
+        if (typeof req.params.loaderId === 'undefined' || req.params.loaderId === '') {
+            throw new FreshbufferAiError(
+                StatusCodes.PRECONDITION_FAILED,
+                `Error: documentStoreController.getDocStoreConfigs - doc loader Id not provided!`
+            )
+        }
+        const apiResponse = await findDocStoreAvailableConfigs(req.params.id, req.params.loaderId)
+        return res.json(apiResponse)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export default {
     createDocumentStoreService,
     getAllDocumentStoresService,
     getDocumentsStoreByIdService,
     deleteDocumentStoreService,
-    updateDocumentStoreService
+    updateDocumentStoreService,
+    getDocStoreConfigsService
 }

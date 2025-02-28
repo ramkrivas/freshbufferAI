@@ -9,9 +9,9 @@ import { databaseEntities } from '../../../../core/Database/Constants'
 import { getErrorMessage } from '../../../../core/Errors/Utils'
 import logger from '../../../../core/Logger'
 
-const DOCUMENT_STORE_BASE_FOLDER = 'docustore'
+export const DOCUMENT_STORE_BASE_FOLDER = 'docustore'
 
-const _normalizeFilePaths = async (data: IDocumentStoreLoaderForPreview, entity: DocumentStore | null) => {
+export const _normalizeFilePaths = async (data: IDocumentStoreLoaderForPreview, entity: DocumentStore | null) => {
     const keys = Object.getOwnPropertyNames(data.loaderConfig)
     let rehydrated = false
     for (let i = 0; i < keys.length; i++) {
@@ -60,7 +60,7 @@ const _normalizeFilePaths = async (data: IDocumentStoreLoaderForPreview, entity:
     data.rehydrated = rehydrated
 }
 
-const _splitIntoChunks = async (data: IDocumentStoreLoaderForPreview) => {
+export const _splitIntoChunks = async (data: IDocumentStoreLoaderForPreview) => {
     try {
         const appServer = getRunningExpressApp()
         let splitterInstance = null
