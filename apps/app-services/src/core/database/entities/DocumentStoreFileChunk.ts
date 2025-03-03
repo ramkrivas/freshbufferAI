@@ -1,5 +1,5 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm'
-import { IDocumentStoreFileChunk } from '../../../modules/document-store/domain/Interface'
+import { IDocumentStoreFileChunk } from '../../../modules/DocumentStore/Domain/Interface'
 
 @Entity()
 export class DocumentStoreFileChunk implements IDocumentStoreFileChunk {
