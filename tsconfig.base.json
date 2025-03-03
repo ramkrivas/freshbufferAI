@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@app-services/*": ["apps/app-services/src/*"],
+            "@core-plugins/*": ["apps/core-plugins/src/*"]
+        }
+    },
+    "exclude": ["node_modules", "tmp"]
+}
