@@ -7,3 +7,7 @@ export const entities = {
     DocumentStoreFileChunk,
     UpsertHistory
 }
+
+export * from './DocumentStore'
+export * from './DocumentStoreFileChunk'
+export * from './UpsertHistory'
