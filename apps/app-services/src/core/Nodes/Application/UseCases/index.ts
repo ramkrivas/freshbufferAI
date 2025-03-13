@@ -3,6 +3,8 @@ import { cloneDeep } from 'lodash'
 import { getErrorMessage } from '../../../Errors/Utils'
 import { FreshbufferAiError } from '../../../Errors'
 import { getRunningExpressApp } from '../../../../utils/Server/getRunningExpressApp'
+import { INodeOptionsValue, INodeData } from 'apps/core-plugins/dist/src'
+import { databaseEntities } from '@app-services/core/Database/Constants'
 
 // Get all component nodes
 const getAllNodes = async () => {
@@ -79,9 +81,39 @@ const getSingleNodeIcon = async (nodeName: string) => {
     }
 }
 
+const getSingleNodeAsyncOptions = async (nodeName: string, requestBody: any): Promise<any> => {
+    try {
+        const appServer = getRunningExpressApp()
+        const nodeData: INodeData = requestBody
+        if (Object.prototype.hasOwnProperty.call(appServer.nodesPool.componentNodes, nodeName)) {
+            try {
+                const nodeInstance = appServer.nodesPool.componentNodes[nodeName]
+                const methodName = nodeData.loadMethod || ''
+
+                const dbResponse: INodeOptionsValue[] = await nodeInstance.loadMethods![methodName]!.call(nodeInstance, nodeData, {
+                    appDataSource: appServer.AppDataSource,
+                    databaseEntities: databaseEntities
+                })
+
+                return dbResponse
+            } catch (error) {
+                return []
+            }
+        } else {
+            throw new FreshbufferAiError(StatusCodes.NOT_FOUND, `Node ${nodeName} not found`)
+        }
+    } catch (error) {
+        throw new FreshbufferAiError(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            `Error: nodesService.getSingleNodeAsyncOptions - ${getErrorMessage(error)}`
+        )
+    }
+}
+
 export default {
     getAllNodes,
     getNodeByName,
     getSingleNodeIcon,
-    getAllNodesForCategory
+    getAllNodesForCategory,
+    getSingleNodeAsyncOptions
 }

@@ -50,9 +50,31 @@ const getSingleNodeIcon = async (req: Request, res: Response, next: NextFunction
     }
 }
 
+const getSingleNodeAsyncOptions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        if (!req.body) {
+            throw new FreshbufferAiError(
+                StatusCodes.PRECONDITION_FAILED,
+                `Error: nodesController.getSingleNodeAsyncOptions - body not provided!`
+            )
+        }
+        if (typeof req.params === 'undefined' || !req.params.name) {
+            throw new FreshbufferAiError(
+                StatusCodes.PRECONDITION_FAILED,
+                `Error: nodesController.getSingleNodeAsyncOptions - name not provided!`
+            )
+        }
+        const apiResponse = await nodesService.getSingleNodeAsyncOptions(req.params.name, req.body)
+        return res.json(apiResponse)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export default {
     getAllNodes,
     getNodeByName,
     getSingleNodeIcon,
-    getNodesByCategory
+    getNodesByCategory,
+    getSingleNodeAsyncOptions
 }
