@@ -7,7 +7,7 @@
         "apps/*",
         "freshbuferai",
         "ui",
-        "components",
+        "core-plugins",
         "api-documentation"
     ],
     "scripts": {
