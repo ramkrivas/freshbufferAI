@@ -1,5 +1,21 @@
 #!/usr/bin/env node
 
 const oclif = require('@oclif/core')
+const path = require('path')
 
-oclif.run().then(require('@oclif/core/flush')).catch(require('@oclif/core/handle'))
+// Path to the tsconfig file
+const project = path.join(__dirname, '..', 'tsconfig.json')
+
+// Register ts-node with tsconfig-paths
+require('ts-node').register({
+  project,
+  require: ['tsconfig-paths/register'],  // This resolves your TypeScript path aliases
+})
+
+// In dev mode, always show stack traces
+oclif.settings.debug = true
+
+// Start the CLI
+oclif.run()
+  .then(oclif.flush)
+  .catch(oclif.Errors.handle)

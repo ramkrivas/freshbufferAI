@@ -1,5 +1,5 @@
 import { ICommonObject } from 'core-plugins'
-import { INodeData } from '../core/Interfaces/Interfaces'
+import { INodeData } from '@app-services/core/Interfaces'
 import { getFileName } from './FileSytem/getFileName'
 /**
  * Save upsert flowData
