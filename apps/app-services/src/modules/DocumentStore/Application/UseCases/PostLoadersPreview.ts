@@ -79,7 +79,7 @@ export const _splitIntoChunks = async (data: IDocumentStoreLoaderForPreview) => 
         const nodeModule = await import(nodeInstanceFilePath)
         // doc loader configs
         const nodeData = {
-            credential: data.credential || data.loaderConfig['FLOWISE_CREDENTIAL_ID'] || undefined,
+            credential: data.credential || data.loaderConfig['FRESHBUFFERAI_CREDENTIAL_ID'] || undefined,
             inputs: { ...data.loaderConfig, textSplitter: splitterInstance },
             outputs: { output: 'document' }
         }

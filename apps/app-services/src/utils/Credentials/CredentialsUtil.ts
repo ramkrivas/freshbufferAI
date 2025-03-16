@@ -100,8 +100,8 @@ export const encryptCredentialData = async (plainDataObj: ICredentialDataDecrypt
  * @returns {Promise<string>}
  */
 export const getEncryptionKey = async (): Promise<string> => {
-    if (process.env.FLOWISE_SECRETKEY_OVERWRITE !== undefined && process.env.FLOWISE_SECRETKEY_OVERWRITE !== '') {
-        return process.env.FLOWISE_SECRETKEY_OVERWRITE
+    if (process.env.FRESHBUFFERAI_SECRETKEY_OVERWRITE !== undefined && process.env.FRESHBUFFERAI_SECRETKEY_OVERWRITE !== '') {
+        return process.env.FRESHBUFFERAI_SECRETKEY_OVERWRITE
     }
     try {
         return await fs.promises.readFile(getEncryptionKeyPath(), 'utf8')
@@ -109,7 +109,7 @@ export const getEncryptionKey = async (): Promise<string> => {
         const encryptKey = generateEncryptKey()
         const defaultLocation = process.env.SECRETKEY_PATH
             ? path.join(process.env.SECRETKEY_PATH, 'encryption.key')
-            : path.join(getUserHome(), '.flowise', 'encryption.key')
+            : path.join(getUserHome(), '.freshbufferai', 'encryption.key')
         await fs.promises.writeFile(defaultLocation, encryptKey)
         return encryptKey
     }
