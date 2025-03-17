@@ -14,7 +14,7 @@ const swaggerUiOptions = {
                 'This module serves auto-generated swagger-ui generated API docs from FreshbufferAI express backend, based on a swagger.yml file. Swagger is available on: http://localhost:6655/api-docs',
             license: {
                 name: 'Apache 2.0',
-                url: 'https://github.com/freshbufferAI/Flowise/blob/main/LICENSE.md'
+                url: 'https://github.com/freshbufferAI/freshbufferAI/blob/main/LICENSE.md'
             },
             contact: {
                 name: 'FreshbufferAI',
