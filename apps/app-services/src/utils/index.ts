@@ -23,7 +23,6 @@ import { FreshbufferAiError } from '@app-services/core/Errors'
 import { StatusCodes } from 'http-status-codes'
 import { IDatabaseEntity } from '@app-services/modules/DocumentStore'
 import { DocumentStore, ChatFlow, ChatMessage, DocumentStoreFileChunk, Credential } from '../core/Database/Entities'
-import { getTestCredentialOld } from './TestFlow'
 
 export * from './FileSytem/getFileName'
 export * from './FileSytem/getNodeModulesPackagePath'
