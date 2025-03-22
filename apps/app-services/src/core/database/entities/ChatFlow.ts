@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Entity, Column, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn } from 'typeorm'
-import { ChatflowType, IChatFlow } from '@app-services/modules/ChatFlows/Domain/Interface'
+import { ChatflowType, IChatFlow } from '@app-services/core/Interfaces'
 
 @Entity()
 export class ChatFlow implements IChatFlow {

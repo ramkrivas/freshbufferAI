@@ -243,6 +243,7 @@ export interface IDocument<Metadata extends Record<string, any> = Record<string,
 import { PromptTemplate as LangchainPromptTemplate, PromptTemplateInput } from '@langchain/core/prompts'
 import { VectorStore } from '@langchain/core/vectorstores'
 import { Document } from '@langchain/core/documents'
+import { Moderation } from '../nodes/moderation/Moderation'
 
 export class PromptTemplate extends LangchainPromptTemplate {
     promptValues: ICommonObject
@@ -410,3 +411,36 @@ export type FollowUpPromptConfig = {
     status: boolean
     selectedProvider: FollowUpPromptProvider
 } & FollowUpPromptProviderConfig
+export interface IMultiAgentNode {
+    node: any
+    name: string
+    label: string
+    type: 'supervisor' | 'worker'
+    llm?: any
+    parentSupervisorName?: string
+    workers?: string[]
+    workerPrompt?: string
+    workerInputVariables?: string[]
+    recursionLimit?: number
+    moderations?: Moderation[]
+    multiModalMessageContent?: MessageContentImageUrl[]
+    checkpointMemory?: any
+}
+
+export interface ISeqAgentNode {
+    id: string
+    node: any
+    name: string
+    label: string
+    type: SeqAgentType
+    output: string
+    llm?: any
+    startLLM?: any
+    predecessorAgents?: ISeqAgentNode[]
+    recursionLimit?: number
+    moderations?: Moderation[]
+    multiModalMessageContent?: MessageContentImageUrl[]
+    checkpointMemory?: any
+    agentInterruptToolNode?: any
+    agentInterruptToolFunc?: any
+}

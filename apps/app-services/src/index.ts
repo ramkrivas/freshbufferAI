@@ -12,6 +12,9 @@ import { getNodeModulesPackagePath } from './utils/FileSytem/getNodeModulesPacka
 import { getAllowedIframeOrigins, getCorsOptions, sanitizeMiddleware } from './utils/Security/XSS'
 import logger, { expressRequestLogger } from './core/Logger'
 import { NodesPool } from './core/Nodes/NodesPool'
+import { SSEStreamer } from './utils/SSEStreamer'
+import { CachePool } from './utils/CachePool'
+import { ChatflowPool } from './utils/ChatflowPool'
 
 declare global {
     namespace Express {
@@ -38,8 +41,10 @@ declare global {
 export class App {
     app: express.Application
     nodesPool: NodesPool
+    cachePool: CachePool
+    chatflowPool: ChatflowPool
     AppDataSource: DataSource = getDataSource()
-
+    sseStreamer: SSEStreamer
     constructor() {
         this.app = express()
     }
@@ -56,6 +61,12 @@ export class App {
             // Initialize nodes pool
             this.nodesPool = new NodesPool()
             await this.nodesPool.initialize()
+
+            // Initialize chatflow pool
+            this.chatflowPool = new ChatflowPool()
+
+            // Initialize cache pool
+            this.cachePool = new CachePool()
         } catch (error) {
             logger.error('❌ [app-services]: Error during Data Source initialization:', error)
         }
@@ -100,7 +111,7 @@ export class App {
         })
 
         this.app.use('/api/v1', freshbufferaiApiV1Routes)
-
+        this.sseStreamer = new SSEStreamer(this.app)
         // ----------------------------------------
         // Configure number of proxies in Host Environment
         // ----------------------------------------
