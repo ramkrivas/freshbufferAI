@@ -1068,3 +1068,84 @@ export const handleDocumentLoaderDocuments = async (loader: DocumentLoader, text
 
     return docs
 }
+
+/**
+ * Map ChatMessage to BaseMessage
+ * @param {IChatMessage[]} chatmessages
+ * @returns {BaseMessage[]}
+ */
+export const mapChatMessageToBaseMessage = async (chatmessages: any[] = []): Promise<BaseMessage[]> => {
+    const chatHistory = []
+
+    for (const message of chatmessages) {
+        if (message.role === 'apiMessage' || message.type === 'apiMessage') {
+            chatHistory.push(new AIMessage(message.content || ''))
+        } else if (message.role === 'userMessage' || message.role === 'userMessage') {
+            // check for image/files uploads
+            if (message.fileUploads) {
+                // example: [{"type":"stored-file","name":"0_DiXc4ZklSTo3M8J4.jpg","mime":"image/jpeg"}]
+                try {
+                    let messageWithFileUploads = ''
+                    const uploads = JSON.parse(message.fileUploads)
+                    const imageContents: MessageContentImageUrl[] = []
+                    for (const upload of uploads) {
+                        if (upload.type === 'stored-file' && upload.mime.startsWith('image')) {
+                            const fileData = await getFileFromStorage(upload.name, message.chatflowid, message.chatId)
+                            // as the image is stored in the server, read the file and convert it to base64
+                            const bf = 'data:' + upload.mime + ';base64,' + fileData.toString('base64')
+
+                            imageContents.push({
+                                type: 'image_url',
+                                image_url: {
+                                    url: bf
+                                }
+                            })
+                        } else if (upload.type === 'url' && upload.mime.startsWith('image')) {
+                            imageContents.push({
+                                type: 'image_url',
+                                image_url: {
+                                    url: upload.data
+                                }
+                            })
+                        } else if (upload.type === 'stored-file:full') {
+                            const fileLoaderNodeModule = await import('../nodes/documentloaders/File/File')
+                            // @ts-ignore
+                            const fileLoaderNodeInstance = new fileLoaderNodeModule.nodeClass()
+                            const options = {
+                                retrieveAttachmentChatId: true,
+                                chatflowid: message.chatflowid,
+                                chatId: message.chatId
+                            }
+                            const nodeData = {
+                                inputs: {
+                                    txtFile: `FILE-STORAGE::${JSON.stringify([upload.name])}`
+                                }
+                            }
+                            const documents: IDocument[] = await fileLoaderNodeInstance.init(nodeData, '', options)
+                            const pageContents = documents.map((doc) => doc.pageContent).join('\n')
+                            messageWithFileUploads += `<doc name='${upload.name}'>${pageContents}</doc>\n\n`
+                        }
+                    }
+                    const messageContent = messageWithFileUploads ? `${messageWithFileUploads}\n\n${message.content}` : message.content
+                    chatHistory.push(
+                        new HumanMessage({
+                            content: [
+                                {
+                                    type: 'text',
+                                    text: messageContent
+                                },
+                                ...imageContents
+                            ]
+                        })
+                    )
+                } catch (e) {
+                    // failed to parse fileUploads, continue with text only
+                    chatHistory.push(new HumanMessage(message.content || ''))
+                }
+            } else {
+                chatHistory.push(new HumanMessage(message.content || ''))
+            }
+        }
+    }
+    return chatHistory
+}

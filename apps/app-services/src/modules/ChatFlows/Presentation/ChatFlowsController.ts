@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { getAllChatflows, getChatflowById } from '../Application/UseCases/GetAllChatflows'
-import { ChatflowType } from '../Domain/Interface'
+import { ChatflowType } from '@app-services/core/Interfaces'
 import { FreshbufferAiError } from '@app-services/core/Errors'
 import { StatusCodes } from 'http-status-codes'
 import { ChatFlow } from '@app-services/core/Database/Entities/ChatFlow'

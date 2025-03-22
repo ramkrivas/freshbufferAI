@@ -1,5 +1,5 @@
 import { getRunningExpressApp } from '../../../../utils/Server/getRunningExpressApp'
-import { ChatflowType } from '../../Domain/Interface'
+import { ChatflowType } from '@app-services/core/Interfaces'
 import { ChatFlow } from '../../../../core/Database/Entities/ChatFlow'
 import { FreshbufferAiError, getErrorMessage } from '@app-services/core/Errors'
 import { StatusCodes } from 'http-status-codes'
