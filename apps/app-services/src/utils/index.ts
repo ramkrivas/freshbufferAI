@@ -38,6 +38,12 @@ export const databaseEntities: IDatabaseEntity = {
     DocumentStoreFileChunk: DocumentStoreFileChunk
 }
 
+export const aMonthAgo = () => {
+    const date = new Date()
+    date.setMonth(new Date().getMonth() - 1)
+    return date
+}
+
 const QUESTION_VAR_PREFIX = 'question'
 const FILE_ATTACHMENT_PREFIX = 'file_attachment'
 const CHAT_HISTORY_VAR_PREFIX = 'chat_history'
