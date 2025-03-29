@@ -60,7 +60,7 @@ export const transformToCredentialEntity = async (body: ICredentialReqBody): Pro
  */
 export const encryptCredentialData = async (plainDataObj: ICredentialDataDecrypted): Promise<string> => {
     if (USE_AWS_SECRETS_MANAGER && secretsManagerClient) {
-        const secretName = `FlowiseCredential_${randomBytes(12).toString('hex')}`
+        const secretName = `FreshbufferAICredential_${randomBytes(12).toString('hex')}`
 
         logger.info(`[server]: Upserting AWS Secret: ${secretName}`)
 
