@@ -2,20 +2,19 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 // material-ui
-import { Box, Skeleton, Stack, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { Box, Skeleton, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
 // project imports
-import MainCard from '@/ui-component/cards/MainCard'
-import ItemCard from '@/ui-component/cards/ItemCard'
-import { gridSpacing } from '@/store/constant'
 import AgentsEmptySVG from '@/assets/images/robot.png'
-import LoginDialog from '@/ui-component/dialog/LoginDialog'
-import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
-import { FlowListTable } from '@/ui-component/table/FlowListTable'
-import { StyledButton } from '@/ui-component/button/StyledButton'
-import ViewHeader from '@/layout/MainLayout/ViewHeader'
 import ErrorBoundary from '@/ErrorBoundary'
+import ViewHeader from '@/layout/MainLayout/ViewHeader'
+import { gridSpacing } from '@/store/constant'
+import { StyledButton } from '@/ui-component/button/StyledButton'
+import ItemCard from '@/ui-component/cards/ItemCard'
+import MainCard from '@/ui-component/cards/MainCard'
+import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
+import LoginDialog from '@/ui-component/dialog/LoginDialog'
 
 // API
 import chatflowsApi from '@/api/chatflows'
@@ -27,7 +26,7 @@ import useApi from '@/hooks/useApi'
 import { baseURL } from '@/store/constant'
 
 // icons
-import { IconPlus, IconLayoutGrid, IconList } from '@tabler/icons-react'
+import { IconPlus } from '@tabler/icons-react'
 
 // ==============================|| AGENTS ||============================== //
 
@@ -43,13 +42,6 @@ const Agentflows = () => {
     const [loginDialogProps, setLoginDialogProps] = useState({})
 
     const getAllAgentflows = useApi(chatflowsApi.getAllAgentflows)
-    const [view, setView] = useState(localStorage.getItem('flowDisplayStyle') || 'card')
-
-    const handleChange = (event, nextView) => {
-        if (nextView === null) return
-        localStorage.setItem('flowDisplayStyle', nextView)
-        setView(nextView)
-    }
 
     const onSearchChange = (event) => {
         setSearch(event.target.value)
@@ -132,44 +124,12 @@ const Agentflows = () => {
             ) : (
                 <Stack flexDirection='column' sx={{ gap: 3 }}>
                     <ViewHeader onSearchChange={onSearchChange} search={true} searchPlaceholder='Search Name or Category' title='Agents'>
-                        <ToggleButtonGroup
-                            sx={{ borderRadius: 2, maxHeight: 40 }}
-                            value={view}
-                            color='primary'
-                            exclusive
-                            onChange={handleChange}
-                        >
-                            <ToggleButton
-                                sx={{
-                                    borderColor: theme.palette.grey[900] + 25,
-                                    borderRadius: 2,
-                                    color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                                }}
-                                variant='contained'
-                                value='card'
-                                title='Card View'
-                            >
-                                <IconLayoutGrid />
-                            </ToggleButton>
-                            <ToggleButton
-                                sx={{
-                                    borderColor: theme.palette.grey[900] + 25,
-                                    borderRadius: 2,
-                                    color: theme?.customization?.isDarkMode ? 'white' : 'inherit'
-                                }}
-                                variant='contained'
-                                value='list'
-                                title='List View'
-                            >
-                                <IconList />
-                            </ToggleButton>
-                        </ToggleButtonGroup>
+                       
                         <StyledButton variant='contained' onClick={addNew} startIcon={<IconPlus />} sx={{ borderRadius: 2, height: 40 }}>
                             Add New
                         </StyledButton>
                     </ViewHeader>
-                    {!view || view === 'card' ? (
-                        <>
+                    <>
                             {isLoading && !getAllAgentflows.data ? (
                                 <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
                                     <Skeleton variant='rounded' height={160} />
@@ -179,22 +139,11 @@ const Agentflows = () => {
                             ) : (
                                 <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
                                     {getAllAgentflows.data?.filter(filterFlows).map((data, index) => (
-                                        <ItemCard key={index} onClick={() => goToCanvas(data)} data={data} images={images[data.id]} />
+                                        <ItemCard key={index} onClick={() => goToCanvas(data)} data={data}  />
                                     ))}
                                 </Box>
                             )}
                         </>
-                    ) : (
-                        <FlowListTable
-                            isAgentCanvas={true}
-                            data={getAllAgentflows.data}
-                            images={images}
-                            isLoading={isLoading}
-                            filterFunction={filterFlows}
-                            updateFlowsApi={getAllAgentflows}
-                            setError={setError}
-                        />
-                    )}
                     {!isLoading && (!getAllAgentflows.data || getAllAgentflows.data.length === 0) && (
                         <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
                             <Box sx={{ p: 2, height: 'auto' }}>
