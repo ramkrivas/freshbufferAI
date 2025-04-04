@@ -5,7 +5,7 @@ import { blue } from './tabColors'
 
 export const Tab = styled(BaseTab)(
     ({ ...props }) => `
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   color: white;
   cursor: pointer;
   font-size: 0.75rem;

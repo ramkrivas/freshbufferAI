@@ -20,8 +20,6 @@ import { useTheme } from '@mui/material/styles'
 // project imports
 import { flowContext } from '@/store/context/ReactFlowContext'
 import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
-import { ChatPopUp } from '@/views/chatmessage/ChatPopUp'
-import AddNodes from './AddNodes'
 import ButtonEdge from './ButtonEdge'
 import CanvasHeader from './CanvasHeader'
 import CanvasNode from './CanvasNode'
@@ -49,7 +47,7 @@ import {
 } from '@/utils/genericHelper'
 import useNotifier from '@/utils/useNotifier'
 import { usePrompt } from '@/utils/usePrompt'
-
+import { NodesList } from './NodesList'
 // const
 import { FRESHBUFFERAI_CREDENTIAL_ID } from '@/store/constant'
 
@@ -64,12 +62,15 @@ const Canvas = () => {
 
     const { state } = useLocation()
     const templateFlowData = state ? state.templateFlowData : ''
-
+    const [menuValue, setMenuValue] = useState('1');
     const URLpath = document.location.pathname.toString().split('/')
     const chatflowId =
         URLpath[URLpath.length - 1] === 'canvas' || URLpath[URLpath.length - 1] === 'agentcanvas' ? '' : URLpath[URLpath.length - 1]
     const isAgentCanvas = URLpath.includes('agentcanvas') ? true : false
     const canvasTitle = URLpath.includes('agentcanvas') ? 'Agent' : 'Chatflow'
+    const handleMenuChange = (event, newValue) => {
+        setMenuValue(newValue);
+      };
 
     const { confirm } = useConfirm()
 
@@ -524,6 +525,7 @@ const Canvas = () => {
                         bgcolor: theme.palette.background.default
                     }}
                 >
+                         
                     <Toolbar>
                         <CanvasHeader
                             chatflow={chatflow}
@@ -536,7 +538,10 @@ const Canvas = () => {
                 </AppBar>
                 <Box sx={{ pt: '70px', height: '100vh', width: '100%' }}>
                     <div className='reactflow-parent-wrapper'>
+                        
                         <div className='reactflow-wrapper' ref={reactFlowWrapper}>
+                        <NodesList nodesListInput={getNodesApi.data} isAgentCanvas={isAgentCanvas} chatFlowId={chatflowId} />
+                      
                             <ReactFlow
                                 nodes={nodes}
                                 edges={edges}
@@ -564,7 +569,7 @@ const Canvas = () => {
                                     }}
                                 />
                                 <Background color='#aaa' gap={16} />
-                                <AddNodes isAgentCanvas={isAgentCanvas} nodesData={getNodesApi.data} node={selectedNode} />
+                                {/* <AddNodes isAgentCanvas={isAgentCanvas} nodesData={getNodesApi.data} node={selectedNode} /> */}
                                 {isSyncNodesButtonEnabled && (
                                     <Fab
                                         sx={{
@@ -585,7 +590,7 @@ const Canvas = () => {
                                         <IconRefreshAlert />
                                     </Fab>
                                 )}
-                                <ChatPopUp isAgentCanvas={isAgentCanvas} chatflowid={chatflowId} />
+                  
                             </ReactFlow>
                         </div>
                     </div>

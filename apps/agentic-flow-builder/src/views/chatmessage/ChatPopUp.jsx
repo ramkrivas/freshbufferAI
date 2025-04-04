@@ -135,17 +135,11 @@ export const ChatPopUp = ({ chatflowid, isAgentCanvas }) => {
 
     return (
         <>
-            <StyledFab
-                sx={{ position: 'absolute', right: 20, top: 20 }}
-                ref={anchorRef}
-                size='small'
-                color='secondary'
-                aria-label='chat'
-                title='Chat'
-                onClick={handleToggle}
-            >
-                {open ? <IconX /> : <IconMessage />}
-            </StyledFab>
+        <div ref={anchorRef}>
+        {open ? <IconX     onClick={handleToggle} /> : <IconMessage  onClick={handleToggle} />}
+        </div>
+       
+
             {open && (
                 <StyledFab
                     sx={{ position: 'absolute', right: 80, top: 20 }}

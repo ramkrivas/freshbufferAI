@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 // material-ui
 import { styled } from '@mui/material/styles'
 import { Box, Grid, Typography, useTheme } from '@mui/material'
-
+import ModelTrainingIcon from '@mui/icons-material/ModelTraining';
 // project imports
 import MainCard from '@/ui-component/cards/MainCard'
 
@@ -106,6 +106,7 @@ const ItemCard = ({ data, images, onClick }) => {
                             </span>
                         )}
                     </Box>
+                    <ModelTrainingIcon />
                     {images && (
                         <Box
                             sx={{

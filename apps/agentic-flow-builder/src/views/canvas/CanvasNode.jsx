@@ -23,7 +23,18 @@ import LlamaindexPNG from '@/assets/images/robot.png'
 
 // ===========================|| CANVAS NODE ||=========================== //
 
+
+const mapCategoryNaming = (category) => { 
+    if(category.toLowerCase() === 'vector stores') {
+        return 'Knowledge Base'
+    }
+
+    return category;
+  }
+
+
 const CanvasNode = ({ data }) => {
+
     const theme = useTheme()
     const canvas = useSelector((state) => state.canvas)
     const { deleteNode, duplicateNode } = useContext(flowContext)
@@ -142,35 +153,20 @@ const CanvasNode = ({ data }) => {
                 >
                     <Box>
                         <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                            <Box style={{ width: 50, marginRight: 10, padding: 5 }}>
+                            <Box >
                                 <div
                                     style={{
-                                        ...theme.typography.commonAvatar,
-                                        ...theme.typography.largeAvatar,
-                                        borderRadius: '50%',
+                                        padding: 10,
+                                        fontWeight: 900,
                                         backgroundColor: 'white',
                                         cursor: 'grab'
                                     }}
                                 >
-                                    <img
-                                        style={{ width: '100%', height: '100%', padding: 5, objectFit: 'contain' }}
-                                        src={`${baseURL}/api/v1/node-icon/${data.name}`}
-                                        alt='Notification'
-                                    />
+                                    {mapCategoryNaming(data.category)} -   {data.label}
                                 </div>
                             </Box>
-                            <Box>
-                                <Typography
-                                    sx={{
-                                        fontSize: '1rem',
-                                        fontWeight: 500,
-                                        mr: 2
-                                    }}
-                                >
-                                    {data.label}
-                                </Typography>
-                            </Box>
-                            <div style={{ flexGrow: 1 }}></div>
+                         
+                          
                             {data.tags && data.tags.includes('LlamaIndex') && (
                                 <>
                                     <div

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-// material-ui
+
 import { Box, Skeleton, Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 
@@ -130,20 +130,20 @@ const Agentflows = () => {
                         </StyledButton>
                     </ViewHeader>
                     <>
-                            {isLoading && !getAllAgentflows.data ? (
-                                <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                    <Skeleton variant='rounded' height={160} />
-                                    <Skeleton variant='rounded' height={160} />
-                                    <Skeleton variant='rounded' height={160} />
-                                </Box>
-                            ) : (
-                                <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
-                                    {getAllAgentflows.data?.filter(filterFlows).map((data, index) => (
-                                        <ItemCard key={index} onClick={() => goToCanvas(data)} data={data}  />
-                                    ))}
-                                </Box>
-                            )}
-                        </>
+                        {isLoading && !getAllAgentflows.data ? (
+                            <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
+                                <Skeleton variant='rounded' height={160} />
+                                <Skeleton variant='rounded' height={160} />
+                                <Skeleton variant='rounded' height={160} />
+                            </Box>
+                        ) : (
+                            <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
+                                {getAllAgentflows.data?.filter(filterFlows).map((data, index) => (
+                                    <ItemCard key={index} onClick={() => goToCanvas(data)} data={data} />
+                                ))}
+                            </Box>
+                        )}
+                    </>
                     {!isLoading && (!getAllAgentflows.data || getAllAgentflows.data.length === 0) && (
                         <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
                             <Box sx={{ p: 2, height: 'auto' }}>
