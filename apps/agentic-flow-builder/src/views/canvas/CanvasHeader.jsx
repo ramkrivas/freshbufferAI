@@ -77,6 +77,7 @@ const CanvasHeader = ({ chatflow, isAgentCanvas, handleSaveFlow, handleDeleteFlo
     }, [updateChatflowApi.data])
 
     useEffect(() => {
+       
         if (chatflow) {
             setFlowName(chatflow.name)
           
@@ -97,7 +98,7 @@ const CanvasHeader = ({ chatflow, isAgentCanvas, handleSaveFlow, handleDeleteFlo
                         </ButtonBase>
                     </Box>
                     <Box sx={{ width: '100%' }}>
-                        {!isEditingFlowName ? (
+                   
                             <Stack flexDirection='row'>
                                 <Typography
                                     sx={{
@@ -111,40 +112,9 @@ const CanvasHeader = ({ chatflow, isAgentCanvas, handleSaveFlow, handleDeleteFlo
                                 >
                                     {canvas.isDirty && <strong style={{ color: theme.palette.orange.main }}>*</strong>} {flowName}
                                 </Typography>
-                                {chatflow?.id && (
-                                    <ButtonBase title='Edit Name' sx={{ borderRadius: '50%' }}>
-                                        <IconPencil onClick={() => setEditingFlowName(true)} />
-                                    </ButtonBase>
-                                )}
+                              
                             </Stack>
-                        ) : (
-                            <Stack flexDirection='row' sx={{ width: '100%' }}>
-                                <TextField
-                                    //eslint-disable-next-line jsx-a11y/no-autofocus
-                                    autoFocus
-                                    size='small'
-                                    inputRef={flowNameRef}
-                                    sx={{
-                                        width: '100%',
-                                        ml: 2
-                                    }}
-                                    defaultValue={flowName}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            submitFlowName()
-                                        } else if (e.key === 'Escape') {
-                                            setEditingFlowName(false)
-                                        }
-                                    }}
-                                />
-                                <ButtonBase title='Save Name'>
-                                    <IconCheck onClick={submitFlowName} />
-                                </ButtonBase>
-                                <ButtonBase title='Cancel'>
-                                    <IconX onClick={() => setEditingFlowName(false)} />
-                                </ButtonBase>
-                            </Stack>
-                        )}
+                   
                     </Box>
                 </Stack>
                 <Box>

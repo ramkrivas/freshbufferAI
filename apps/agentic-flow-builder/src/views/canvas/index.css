@@ -45,3 +45,15 @@
     cursor: crosshair;
     background: #5dba62 !important;
 }
+
+.appBar{
+    padding: 20px
+}
+
+.my-custom-flow {
+    background-color: #fafafa;
+  }
+  
+  .my-custom-flow .react-flow__background {
+    stroke: #ccc;
+  }

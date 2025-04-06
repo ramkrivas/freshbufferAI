@@ -5,7 +5,7 @@ import Loadable from '@/ui-component/loading/Loadable'
 import MinimalLayout from '@/layout/MinimalLayout'
 
 // canvas routing
-const Canvas = Loadable(lazy(() => import('@/views/canvas')))
+const Canvas = Loadable(lazy(() => import('@/views/canvas/Designer')))
 
 // ==============================|| CANVAS ROUTING ||============================== //
 
