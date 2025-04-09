@@ -1,0 +1,168 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+
+import { Box, Skeleton, Stack } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
+
+// project imports
+import AgentsEmptySVG from '@/assets/images/robot.png'
+import ErrorBoundary from '@/ErrorBoundary'
+import ViewHeader from '@/layout/MainLayout/ViewHeader'
+import { gridSpacing } from '@/store/constant'
+import { StyledButton } from '@/ui-component/button/StyledButton'
+import ItemCard from '@/ui-component/cards/ItemCard'
+import MainCard from '@/ui-component/cards/MainCard'
+import ConfirmDialog from '@/ui-component/dialog/ConfirmDialog'
+import LoginDialog from '@/ui-component/dialog/LoginDialog'
+
+// API
+import chatflowsApi from '@/api/chatflows'
+
+// Hooks
+import useApi from '@/hooks/useApi'
+
+// const
+import { baseURL } from '@/store/constant'
+
+// icons
+import { IconPlus } from '@tabler/icons-react'
+
+// ==============================|| AGENTS ||============================== //
+
+const Agentflows = () => {
+    const navigate = useNavigate()
+    const theme = useTheme()
+
+    const [isLoading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    const [images, setImages] = useState({})
+    const [search, setSearch] = useState('')
+    const [loginDialogOpen, setLoginDialogOpen] = useState(false)
+    const [loginDialogProps, setLoginDialogProps] = useState({})
+
+    const getAllAgentflows = useApi(chatflowsApi.getAllAgentflows)
+
+    const onSearchChange = (event) => {
+        setSearch(event.target.value)
+    }
+
+    function filterFlows(data) {
+        return (
+            data.name.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+            (data.category && data.category.toLowerCase().indexOf(search.toLowerCase()) > -1) ||
+            data.id.toLowerCase().indexOf(search.toLowerCase()) > -1
+        )
+    }
+
+    const onLoginClick = (username, password) => {
+        localStorage.setItem('username', username)
+        localStorage.setItem('password', password)
+        navigate(0)
+    }
+
+    const addNew = () => {
+        navigate('/agentcanvas')
+    }
+
+    const goToCanvas = (selectedAgentflow) => {
+        navigate(`/agentcanvas/${selectedAgentflow.id}`)
+    }
+
+    useEffect(() => {
+        getAllAgentflows.request()
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        if (getAllAgentflows.error) {
+            if (getAllAgentflows.error?.response?.status === 401) {
+                setLoginDialogProps({
+                    title: 'Login',
+                    confirmButtonName: 'Login'
+                })
+                setLoginDialogOpen(true)
+            } else {
+                setError(getAllAgentflows.error)
+            }
+        }
+    }, [getAllAgentflows.error])
+
+    useEffect(() => {
+        setLoading(getAllAgentflows.loading)
+    }, [getAllAgentflows.loading])
+
+    useEffect(() => {
+        if (getAllAgentflows.data) {
+            try {
+                const agentflows = getAllAgentflows.data
+                const images = {}
+                for (let i = 0; i < agentflows.length; i += 1) {
+                    const flowDataStr = agentflows[i].flowData
+                    const flowData = JSON.parse(flowDataStr)
+                    const nodes = flowData.nodes || []
+                    images[agentflows[i].id] = []
+                    for (let j = 0; j < nodes.length; j += 1) {
+                        const imageSrc = `${baseURL}/api/v1/node-icon/${nodes[j].data.name}`
+                        if (!images[agentflows[i].id].includes(imageSrc)) {
+                            images[agentflows[i].id].push(imageSrc)
+                        }
+                    }
+                }
+                setImages(images)
+            } catch (e) {
+                console.error(e)
+            }
+        }
+    }, [getAllAgentflows.data])
+
+    return (
+        <MainCard>
+            {error ? (
+                <ErrorBoundary error={error} />
+            ) : (
+                <Stack flexDirection='column' sx={{ gap: 3 }}>
+                    <ViewHeader onSearchChange={onSearchChange} search={true} searchPlaceholder='Search Name or Category' title='Agents'>
+                       
+                        <StyledButton variant='contained' onClick={addNew} startIcon={<IconPlus />} sx={{ borderRadius: 2, height: 40 }}>
+                            Add New
+                        </StyledButton>
+                    </ViewHeader>
+                    <>
+                        {isLoading && !getAllAgentflows.data ? (
+                            <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
+                                <Skeleton variant='rounded' height={160} />
+                                <Skeleton variant='rounded' height={160} />
+                                <Skeleton variant='rounded' height={160} />
+                            </Box>
+                        ) : (
+                            <Box display='grid' gridTemplateColumns='repeat(3, 1fr)' gap={gridSpacing}>
+                                {getAllAgentflows.data?.filter(filterFlows).map((data, index) => (
+                                    <ItemCard key={index} onClick={() => goToCanvas(data)} data={data} />
+                                ))}
+                            </Box>
+                        )}
+                    </>
+                    {!isLoading && (!getAllAgentflows.data || getAllAgentflows.data.length === 0) && (
+                        <Stack sx={{ alignItems: 'center', justifyContent: 'center' }} flexDirection='column'>
+                            <Box sx={{ p: 2, height: 'auto' }}>
+                                <img
+                                    style={{ objectFit: 'cover', height: '12vh', width: 'auto' }}
+                                    src={AgentsEmptySVG}
+                                    alt='AgentsEmptySVG'
+                                />
+                            </Box>
+                            <div>No Agents Yet</div>
+                        </Stack>
+                    )}
+                </Stack>
+            )}
+
+            <LoginDialog show={loginDialogOpen} dialogProps={loginDialogProps} onConfirm={onLoginClick} />
+            <ConfirmDialog />
+        </MainCard>
+    )
+}
+
+export default Agentflows

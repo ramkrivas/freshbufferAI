@@ -126,7 +126,7 @@ export class App {
         // Serve UI static
         // ----------------------------------------
 
-        const packagePath = getNodeModulesPackagePath('freshbufferai-ui')
+        const packagePath = getNodeModulesPackagePath('agentic-flow-builder')
         const uiBuildPath = path.join(packagePath, 'build')
         const uiHtmlPath = path.join(packagePath, 'build', 'index.html')
 

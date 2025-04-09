@@ -4,6 +4,7 @@ import { DocumentStoreFileChunk } from './DocumentStoreFileChunk'
 import { UpsertHistory } from './UpsertHistory'
 import { Credential } from './Credential'
 import { ChatMessage } from './ChatMessage'
+import { ChatMessageFeedback } from './ChatMessageFeedback'
 
 export const entities = {
     DocumentStore,
@@ -11,7 +12,8 @@ export const entities = {
     UpsertHistory,
     ChatFlow,
     Credential,
-    ChatMessage
+    ChatMessage,
+    ChatMessageFeedback
 }
 
 export * from './DocumentStore'
@@ -20,3 +22,4 @@ export * from './UpsertHistory'
 export * from './ChatFlow'
 export * from './Credential'
 export * from './ChatMessage'
+export * from './ChatMessageFeedback'

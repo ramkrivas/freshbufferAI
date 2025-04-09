@@ -23,7 +23,6 @@ import { FreshbufferAiError } from '@app-services/core/Errors'
 import { StatusCodes } from 'http-status-codes'
 import { IDatabaseEntity } from '@app-services/modules/DocumentStore'
 import { DocumentStore, ChatFlow, ChatMessage, DocumentStoreFileChunk, Credential } from '../core/Database/Entities'
-import { getTestCredentialOld } from './TestFlow'
 
 export * from './FileSytem/getFileName'
 export * from './FileSytem/getNodeModulesPackagePath'
@@ -37,6 +36,12 @@ export const databaseEntities: IDatabaseEntity = {
     Credential: Credential,
     DocumentStore: DocumentStore,
     DocumentStoreFileChunk: DocumentStoreFileChunk
+}
+
+export const aMonthAgo = () => {
+    const date = new Date()
+    date.setMonth(new Date().getMonth() - 1)
+    return date
 }
 
 const QUESTION_VAR_PREFIX = 'question'
@@ -997,7 +1002,7 @@ export const getVariableValue = async (
             /**
              * Apply string transformation to convert special chars:
              * FROM: hello i am ben\n\n\thow are you?
-             * TO: hello i am benFLOWISE_NEWLINEFLOWISE_NEWLINEFLOWISE_TABhow are you?
+             * TO: hello i am benFRESHBUFFERAI_NEWLINEFRESHBUFFERAI_NEWLINEFFRESHBUFFERAI_TABhow are you?
              */
             if (isAcceptVariable && variableFullPath === QUESTION_VAR_PREFIX) {
                 variableDict[`{{${variableFullPath}}}`] = handleEscapeCharacters(question, false)

@@ -20,6 +20,25 @@ export interface IChatFlow {
     category?: string
     type?: ChatflowType
 }
+export enum ChatMessageRatingType {
+    THUMBS_UP = 'THUMBS_UP',
+    THUMBS_DOWN = 'THUMBS_DOWN'
+}
+
+export interface IUploadFileSizeAndTypes {
+    fileTypes: string[]
+    maxUploadSize: number
+}
+
+export interface IChatMessageFeedback {
+    id: string
+    content?: string
+    chatflowid: string
+    chatId: string
+    messageId: string
+    rating: ChatMessageRatingType
+    createdDate: Date
+}
 
 export enum ChatType {
     INTERNAL = 'INTERNAL',

@@ -6,7 +6,7 @@
     "workspaces": [
         "apps/*",
         "freshbuferai",
-        "ui",
+        "agentic-flow-builder",
         "core-plugins",
         "api-documentation"
     ],
