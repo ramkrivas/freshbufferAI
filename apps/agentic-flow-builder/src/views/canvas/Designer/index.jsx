@@ -45,7 +45,6 @@ const Canvas = () => {
     const URLpath = document.location.pathname.toString().split('/')
     const chatflowId =
         URLpath[URLpath.length - 1] === 'canvas' || URLpath[URLpath.length - 1] === 'agentcanvas' ? '' : URLpath[URLpath.length - 1]
-    const isAgentCanvas = URLpath.includes('agentcanvas') ? true : false
 
     const [showChat, setShowChat] = useState(false)
 
@@ -217,7 +216,7 @@ const Canvas = () => {
                     <NodesList
                   
                         setShowChat={setShowChat}
-                        isAgentCanvas={isAgentCanvas}
+                        isAgentCanvas={true}
                         chatFlowId={chatflowId}
                     />
                     {!showChat ? (
@@ -256,7 +255,7 @@ const Canvas = () => {
                         </div>
                     ) : (
                         <ChatMessage
-                            isAgentCanvas={isAgentCanvas}
+                            isAgentCanvas={true}
                             chatflowid={chatflowId}
                             open={true}
                             previews={previews}
